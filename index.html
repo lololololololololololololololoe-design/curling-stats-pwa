@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика Керлинга</title>
+    <meta name="theme-color" content="#2c3e50">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    
+    <!-- iOS мета-теги -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Стили -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <header class="header">
+            <h1><i class="fas fa-hockey-puck"></i> Статистика Керлинга</h1>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="matches-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-trophy"></i> Все матчи</h2>
+                    <button id="createMatchBtn" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Создать матч
+                    </button>
+                </div>
+
+                <!-- Список матчей -->
+                <div id="matchesList" class="matches-list">
+                    <!-- Матчи будут добавляться динамически -->
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>У вас пока нет матчей</p>
+                        <p class="subtext">Создайте первый матч для ведения статистики</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Модальное окно создания матча -->
+            <div id="createMatchModal" class="modal hidden">
+                <div class="modal-content">
+                    <h2><i class="fas fa-plus-circle"></i> Создать новый матч</h2>
+                    <form id="createMatchForm">
+                        <div class="form-group">
+                            <label for="matchName">Название матча:</label>
+                            <input type="text" id="matchName" 
+                                   placeholder="Например: Чемпионат города, 1/4 финала" 
+                                   required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="team1Name">Команда 1:</label>
+                            <input type="text" id="team1Name" 
+                                   placeholder="Красные" 
+                                   value="Команда 1" 
+                                   required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="team2Name">Команда 2:</label>
+                            <input type="text" id="team2Name" 
+                                   placeholder="Желтые" 
+                                   value="Команда 2" 
+                                   required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="player1Name">Игрок 1:</label>
+                                <input type="text" id="player1Name" 
+                                       placeholder="Игрок 1" 
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="player2Name">Игрок 2:</label>
+                                <input type="text" id="player2Name" 
+                                        placeholder="Игрок 2" 
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="player3Name">Игрок 3:</label>
+                                <input type="text" id="player3Name" 
+                                       placeholder="Игрок 3" 
+                                       required>
+                            </div>
+                            <div class="form-group">
+                                <label for="player4Name">Игрок 4:</label>
+                                <input type="text" id="player4Name" 
+                                       placeholder="Игрок 4" 
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="player5Name">Игрок 5:</label>
+                            <input type="text" id="player5Name" 
+                                   placeholder="Игрок 5" 
+                                   required>
+                        </div>
+
+                        <div class="modal-buttons">
+                            <button type="button" id="cancelCreateBtn" class="btn btn-secondary">
+                                Отмена
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Создать матч
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <div class="app-info">
+                <i class="fas fa-mobile-alt"></i>
+                <span>Установите это приложение на домашний экран</span>
+            </div>
+            <div class="offline-status" id="offlineStatus">
+                <i class="fas fa-wifi"></i>
+                <span>Онлайн</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="db.js"></script>
+    <script src="app.js"></script>
+    
+    <script>
+        // Проверка Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('SW зарегистрирован'))
+                    .catch(err => console.log('Ошибка SW:', err));
+            });
+        }
+    </script>
+</body>
+</html>

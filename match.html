@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Матч - Статистика Керлинга</title>
+    <meta name="theme-color" content="#2c3e50">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png">
+    
+    <!-- Стили -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Шрифты и иконки -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка матча -->
+        <header class="header">
+            <div class="header-left">
+                <a href="index.html" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+            </div>
+            
+            <div class="header-center">
+                <input type="text" id="matchTitle" class="match-title-input" 
+                       placeholder="Название матча">
+            </div>
+            
+            <div class="header-right">
+                <button id="deleteMatchBtn" class="btn btn-danger" title="Удалить матч">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <!-- Табло счета -->
+            <div class="scoreboard-section">
+                <div class="scoreboard">
+                    <!-- Команда 1 (красная) -->
+                    <div class="team-score active-team" id="team1Score">
+                        <input type="text" class="team-name team1-name" 
+                               value="Команда 1" id="team1NameInput">
+                        <div class="score-display" id="team1Total">0</div>
+                        <div class="ends-container">
+                            <div class="ends-header">Энды:</div>
+                            <div class="ends-grid" id="team1Ends">
+                                <!-- Энды будут добавляться динамически -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Разделитель -->
+                    <div class="score-divider">
+                        <div class="ends-label">Энд</div>
+                        <div class="ends-numbers" id="endsNumbers">
+                            <!-- Номера эндов будут добавляться динамически -->
+                        </div>
+                    </div>
+                    
+                    <!-- Команда 2 (желтая) -->
+                    <div class="team-score" id="team2Score">
+                        <input type="text" class="team-name team2-name" 
+                               value="Команда 2" id="team2NameInput">
+                        <div class="score-display" id="team2Total">0</div>
+                        <div class="ends-container">
+                            <div class="ends-header">Энды:</div>
+                            <div class="ends-grid" id="team2Ends">
+                                <!-- Энды будут добавляться динамически -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Управление эндами -->
+                <div class="ends-controls">
+                    <button id="prevEndBtn" class="btn btn-secondary">
+                        <i class="fas fa-chevron-left"></i> Предыдущий энд
+                    </button>
+                    <div class="current-end">
+                        <span>Текущий энд:</span>
+                        <select id="currentEndSelect" class="end-select">
+                            <!-- Опции будут добавляться динамически -->
+                        </select>
+                    </div>
+                    <button id="nextEndBtn" class="btn btn-secondary"> Следующий энд <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Таблица статистики команды 1 -->
+            <div class="stats-section">
+                <div class="team-stats-header">
+                    <h3><i class="fas fa-users"></i> <span id="team1StatsTitle">Команда 1</span></h3>
+                    <div class="team-color-indicator color-red"></div>
+                </div>
+                
+                <div class="stats-table-container">
+                    <table class="stats-table" id="team1Table">
+                        <thead>
+                            <tr>
+                                <th class="throw-type">Вид броска</th>
+                                <!-- Заголовки игроков будут добавляться динамически -->
+                                <th class="team-total">Команда</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Данные будут добавляться динамически -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Таблица статистики команды 2 -->
+            <div class="stats-section">
+                <div class="team-stats-header">
+                    <h3><i class="fas fa-users"></i> <span id="team2StatsTitle">Команда 2</span></h3>
+                    <div class="team-color-indicator color-yellow"></div>
+                </div>
+                
+                <div class="stats-table-container">
+                    <table class="stats-table" id="team2Table">
+                        <thead>
+                            <tr>
+                                <th class="throw-type">Вид броска</th>
+                                <!-- Заголовки игроков будут добавляться динамически -->
+                                <th class="team-total">Команда</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Данные будут добавляться динамически -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Кнопка ИГРАТЬ -->
+            <div class="play-button-section">
+                <a href="throw.html" id="playButton" class="btn btn-play">
+                    <i class="fas fa-play-circle"></i> ИГРАТЬ
+                </a>
+            </div>
+        </main>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <div class="match-info">
+                <span id="lastSaved">Данные сохранены локально</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Модальное окно подтверждения удаления -->
+    <div id="deleteConfirmModal" class="modal hidden">
+        <div class="modal-content confirm-modal">
+            <h2><i class="fas fa-exclamation-triangle"></i> Удалить матч?</h2>
+            <p>Все данные этого матча будут удалены без возможности восстановления.</p>
+            <div class="modal-buttons">
+                <button id="cancelDeleteBtn" class="btn btn-secondary">
+                    Отмена
+                </button>
+                <button id="confirmDeleteBtn" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="db.js"></script>
+    <script src="match.js"></script>
+    
+    <script>
+        // Получение ID матча из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const matchId = urlParams.get('id');
+        
+        if (matchId) {
+            window.matchId = matchId;
+        } else {
+            // Если нет ID, возвращаемся на главную
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

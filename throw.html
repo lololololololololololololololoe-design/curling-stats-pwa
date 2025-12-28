@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ввод броска - Статистика Керлинга</title>
+    <meta name="theme-color" content="#2c3e50">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png">
+    
+    <!-- Стили -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Шрифты и иконки -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="header-left">
+                <button id="backButton" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Назад к матчу
+                </button>
+            </div>
+            
+            <div class="header-center">
+                <h1><i class="fas fa-bullseye"></i> Ввод броска</h1>
+            </div>
+            
+            <div class="header-right">
+                <span class="current-match" id="currentMatchName"></span>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content throw-page">
+            <!-- Выбор команды -->
+            <div class="selection-section">
+                <h2><i class="fas fa-flag"></i> Выберите команду</h2>
+                <div class="team-selector">
+                    <button class="team-option" data-team="1" id="team1Option">
+                        <div class="team-color color-red"></div>
+                        <span class="team-name" id="team1NameDisplay">Команда 1</span>
+                    </button>
+                    <button class="team-option" data-team="2" id="team2Option">
+                        <div class="team-color color-yellow"></div>
+                        <span class="team-name" id="team2NameDisplay">Команда 2</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Выбор игрока -->
+            <div class="selection-section">
+                <h2><i class="fas fa-user"></i> Выберите игрока</h2>
+                <div class="player-selector" id="playerSelector">
+                    <!-- Игроки будут добавляться динамически -->
+                </div>
+            </div>
+
+            <!-- Выбор типа броска -->
+            <div class="selection-section">
+                <h2><i class="fas fa-hockey-puck"></i> Тип броска</h2>
+                <div class="throw-type-selector">
+                    <button class="throw-type-btn" data-type="take" id="takeBtn">
+                        <i class="fas fa-bullseye"></i>
+                        <span>Тейк</span>
+                        <small>Выбивание</small>
+                    </button>
+                    <button class="throw-type-btn" data-type="draw" id="drawBtn">
+                        <i class="fas fa-bullseye"></i>
+                        <span>Дро</span>
+                        <small>Крученый</small>
+                    </button>
+                    <button class="throw-type-btn" data-type="guard" id="guardBtn">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Гард</span>
+                        <small>Защита</small>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Выбор процента попадания -->
+            <div class="selection-section">
+                <h2><i class="fas fa-percentage"></i> Процент попадания</h2>
+                <div class="percentage-selector">
+                    <button class="percentage-btn" data-value="0" id="percent0">
+                        <span class="percent-value">0%</span>
+                        <span class="percent-label">Неудача</span>
+                    </button>
+                    <button class="percentage-btn" data-value="25" id="percent25">
+                        <span class="percent-value">25%</span>
+                        <span class="percent-label">Плохо</span>
+                    </button>
+                    <button class="percentage-btn" data-value="50" id="percent50">
+                        <span class="percent-value">50%</span>
+                        <span class="percent-label">Удовл.</span>
+                    </button>
+                    <button class="percentage-btn" data-value="75" id="percent75">
+                        <span class="percent-value">75%</span>
+                        <span class="percent-label">Хорошо</span>
+                    </button>
+                    <button class="percentage-btn" data-value="100" id="percent100">
+                        <span class="percent-value">100%</span>
+                        <span class="percent-label">Отлично</span>
+                    </button>
+                    <button class="percentage-btn" data-value="125" id="percent125">
+                        <span class="percent-value">125%</span>
+                        <span class="percent-label">Идеально</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Кнопка сохранения -->
+            <div class="save-section">
+                <button id="saveThrowBtn" class="btn btn-save" disabled>
+                    <i class="fas fa-save"></i> Сохранить бросок
+                </button>
+                
+                <div class="throw-summary" id="throwSummary">
+                    <!-- Сводка будет отображаться здесь -->
+                </div>
+            </div>
+
+            <!-- Последние броски -->
+            <div class="recent-throws-section">
+                <h2><i class="fas fa-history"></i> Последние броски</h2>
+                <div class="recent-throws-list" id="recentThrowsList">
+                    <!-- Последние броски будут отображаться здесь -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Футер -->
+        <footer class="footer">
+            <div class="instructions">
+                <i class="fas fa-info-circle"></i>
+                <span>Выберите все параметры для сохранения броска</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="db.js"></script>
+    <script src="throw.js"></script>
+    
+    <script>
+        // Получение ID матча из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const matchId = urlParams.get('match');
+        
+        if (matchId) {
+            window.matchId = matchId;
+        } else {
+            // Если нет ID, возвращаемся на главную
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
