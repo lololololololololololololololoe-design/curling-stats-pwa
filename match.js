@@ -100,83 +100,104 @@ class MatchPage {
         document.getElementById('team1StatsTitle').textContent = this.match.team1Name || 'Команда 1';
         document.getElementById('team2StatsTitle').textContent = this.match.team2Name || 'Команда 2';
         
-        // Табло счета
-        this.renderScoreboard();
-        
-        // Энды
-        this.renderEnds();
+        // Рендерим новую таблицу эндов
+        this.renderEndsTable();
         
         // Статистические таблицы
         this.renderStatsTables();
+        
+        // Устанавливаем текущий энд
+        document.getElementById('currentEndSelect').value = this.currentEnd;
     }
     
-    renderScoreboard() {
-        document.getElementById('team1Total').textContent = this.match.team1Score || 0;
-        document.getElementById('team2Total').textContent = this.match.team2Score || 0;
-        
-        // Подсвечиваем активную команду (ведущую в счете)
-        const team1Score = document.getElementById('team1Score');
-        const team2Score = document.getElementById('team2Score');
-        
-        if ((this.match.team1Score || 0) > (this.match.team2Score || 0)) {
-            team1Score.classList.add('active-team');
-            team2Score.classList.remove('active-team');
-        } else if ((this.match.team2Score || 0) > (this.match.team1Score || 0)) {
-            team2Score.classList.add('active-team');
-            team1Score.classList.remove('active-team');
-        } else {
-            team1Score.classList.remove('active-team');
-            team2Score.classList.remove('active-team');
-        }
-    }
-    
-    renderEnds() {
+    renderEndsTable() {
         const ends = this.match.ends || this.db.createEmptyEnds();
-        const endsNumbers = document.getElementById('endsNumbers');
-        const team1Ends = document.getElementById('team1Ends');
-        const team2Ends = document.getElementById('team2Ends');
-        const endSelect = document.getElementById('currentEndSelect');
         
-        // Очищаем
-        endsNumbers.innerHTML = '';
-        team1Ends.innerHTML = '';
-        team2Ends.innerHTML = '';
-        endSelect.innerHTML = '';
-        
-        ends.forEach((end, index) => {
-            const endNumber = index + 1;
-            
-            // Номера эндов
-            const endNumberElement = document.createElement('div');
-            endNumberElement.className = 'end-number';
-            endNumberElement.textContent = endNumber;
-            endsNumbers.appendChild(endNumberElement);
-            
-            // Энды команды 1
-            const team1EndCell = document.createElement('div');
-            team1EndCell.className = 'end-cell';
-            if (endNumber === this.currentEnd) team1EndCell.classList.add('current');
-            if (end.team1Score > 0) team1EndCell.classList.add('filled');
-            team1EndCell.textContent = end.team1Score || '';
-            team1EndCell.addEventListener('click', () => this.editEndScore(1, endNumber));
-            team1Ends.appendChild(team1EndCell);
-            
-            // Энды команды 2
-            const team2EndCell = document.createElement('div');
-            team2EndCell.className = 'end-cell';
-            if (endNumber === this.currentEnd) team2EndCell.classList.add('current');
-            if (end.team2Score > 0) team2EndCell.classList.add('filled');
-            team2EndCell.textContent = end.team2Score || '';
-            team2EndCell.addEventListener('click', () => this.editEndScore(2, endNumber));
-            team2Ends.appendChild(team2EndCell);
-            
-            // Опция в выпадающем списке
-            const option = document.createElement('option');
-            option.value = endNumber;
-            option.textContent = `Энд ${endNumber}`;
-            if (endNumber === this.currentEnd) option.selected = true;
-            endSelect.appendChild(option);
+        // Заполняем ячейки для команды 1
+        ends.forEach((end) => {
+            const input = document.querySelector(`.team1-score[data-end="${end.number}"]`);
+            if (input) {
+                input.value = end.team1Score || 0;
+                input.addEventListener('change', (e) => {
+                    this.updateEndScore(1, end.number, parseInt(e.target.value) || 0);
+                });
+            }
         });
+        
+        // Заполняем ячейки для команды 2
+        ends.forEach((end) => {
+            const input = document.querySelector(`.team2-score[data-end="${end.number}"]`);
+            if (input) {
+                input.value = end.team2Score || 0;
+                input.addEventListener('change', (e) => {
+                    this.updateEndScore(2, end.number, parseInt(e.target.value) || 0);
+                });
+            }
+        });
+        
+        // Обновляем общий счет
+        this.updateTotalScores();
+    }
+    
+    async updateEndScore(teamNumber, endNumber, score) {
+        if (score < 0 || score > 8) {
+            this.showNotification('Счет должен быть от 0 до 8', 'warning');
+            return;
+        }
+        
+        const endIndex = endNumber - 1;
+        if (!this.match.ends[endIndex]) {
+            this.match.ends[endIndex] = {
+                number: endNumber,
+                team1Score: 0,
+                team2Score: 0,
+                isPlayed: true
+            };
+        }
+        
+        this.match.ends[endIndex][`team${teamNumber}Score`] = score;
+        this.match.ends[endIndex].isPlayed = true;
+        
+        // Обновляем общий счет
+        this.updateTotalScores();
+        
+        // Сохраняем изменения
+        await this.saveMatch();
+        this.showNotification('Счет обновлен', 'success');
+    }
+    
+    updateTotalScores() {
+        let team1Total = 0;
+        let team2Total = 0;
+        
+        this.match.ends.forEach(end => {
+            team1Total += end.team1Score || 0;
+            team2Total += end.team2Score || 0;
+        });
+        
+        this.match.team1Score = team1Total;
+        this.match.team2Score = team2Total;
+        
+        // Обновляем DOM
+        document.getElementById('team1Total').textContent = team1Total;
+        document.getElementById('team2Total').textContent = team2Total;
+        
+        // Подсвечиваем лидирующую команду
+        this.highlightLeadingTeam();
+    }
+    
+    highlightLeadingTeam() {
+        const team1Row = document.querySelector('.team1-row');
+        const team2Row = document.querySelector('.team2-row');
+        
+        team1Row.classList.remove('leading-team');
+        team2Row.classList.remove('leading-team');
+        
+        if (this.match.team1Score > this.match.team2Score) {
+            team1Row.classList.add('leading-team');
+        } else if (this.match.team2Score > this.match.team1Score) {
+            team2Row.classList.add('leading-team');
+        }
     }
     
     renderStatsTables() {
@@ -187,13 +208,36 @@ class MatchPage {
     renderTeamTable(teamNumber, tableId) {
         const table = document.getElementById(tableId);
         const tbody = table.querySelector('tbody');
+        const thead = table.querySelector('thead tr');
         
         // Очищаем таблицу
         tbody.innerHTML = '';
         
-        // Получаем статистику команды
-        const teamStats = this.db.calculateTeamStats(this.match, teamNumber);
-        const players = Object.values(this.match.players || {}).filter(p => p.team === teamNumber);
+        // Удаляем старые заголовки игроков
+        const oldPlayerHeaders = thead.querySelectorAll('th:not(.throw-type):not(.team-total)');
+        oldPlayerHeaders.forEach(th => th.remove());
+        
+        // Получаем игроков команды (только 4)
+        const players = Object.values(this.match.players || {})
+            .filter(p => p.team === teamNumber)
+            .slice(0, 4); // Берем только первых 4 игроков
+        
+        // Добавляем заголовки игроков
+        players.forEach((player) => {
+            const th = document.createElement('th');
+            th.className = 'player-header';
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'player-name-input';
+            input.value = player.name;
+            input.addEventListener('change', (e) => {
+                this.updatePlayerName(player.id, e.target.value);
+            });
+            
+            th.appendChild(input);
+            thead.insertBefore(th, thead.querySelector('.team-total'));
+        });
         
         // Создаем строки таблицы
         const rows = [
@@ -203,7 +247,7 @@ class MatchPage {
             { type: 'total', label: 'Общее' }
         ];
         
-        rows.forEach((row, rowIndex) => {
+        rows.forEach((row) => {
             const tr = document.createElement('tr');
             
             // Первый столбец - вид броска
@@ -226,6 +270,7 @@ class MatchPage {
             
             // Столбец команды
             const teamTd = document.createElement('td');
+            const teamStats = this.db.calculateTeamStats(this.match, teamNumber);
             const stats = teamStats[row.type];
             teamTd.innerHTML = `
                 <div class="throw-count">${stats.count}</div>
@@ -234,34 +279,6 @@ class MatchPage {
             tr.appendChild(teamTd);
             
             tbody.appendChild(tr);
-        });
-        
-        // Обновляем заголовки игроков
-        this.updatePlayerHeaders(table, players);
-    }
-    
-    updatePlayerHeaders(table, players) {
-        const thead = table.querySelector('thead tr');
-        
-        // Удаляем старые заголовки игроков
-        const oldPlayerHeaders = thead.querySelectorAll('th:not(.throw-type):not(.team-total)');
-        oldPlayerHeaders.forEach(th => th.remove());
-        
-        // Добавляем новые заголовки игроков
-        players.forEach((player, index) => {
-            const th = document.createElement('th');
-            th.className = 'player-header';
-            
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'player-name-input';
-            input.value = player.name;
-            input.addEventListener('change', (e) => {
-                this.updatePlayerName(player.id, e.target.value);
-            });
-            
-            th.appendChild(input);
-            thead.insertBefore(th, thead.querySelector('.team-total'));
         });
     }
     
@@ -305,43 +322,21 @@ class MatchPage {
         this.match.currentEnd = endNumber;
         
         await this.saveMatch();
-        this.renderEnds();
+        
+        // Подсвечиваем текущий энд
+        this.highlightCurrentEnd();
     }
     
-    async editEndScore(teamNumber, endNumber) {
-        const currentScore = this.match.ends[endNumber - 1][`team${teamNumber}Score`];
-        const newScore = prompt(`Введите счет для команды ${teamNumber} в энде ${endNumber}:`, currentScore || '0');
-        
-        if (newScore === null) return;
-        
-        const score = parseInt(newScore) || 0;
-        if (score < 0 || score > 8) {
-            this.showNotification('Счет должен быть от 0 до 8', 'warning');
-            return;
-        }
-        
-        this.match.ends[endNumber - 1][`team${teamNumber}Score`] = score;
-        this.match.ends[endNumber - 1].isPlayed = true;
-        
-        // Пересчитываем общий счет
-        this.recalculateTotalScore();
-        
-        await this.saveMatch();
-        this.render();
-        this.showNotification('Счет обновлен', 'success');
-    }
-    
-    recalculateTotalScore() {
-        let team1Total = 0;
-        let team2Total = 0;
-        
-        this.match.ends.forEach(end => {
-            team1Total += end.team1Score || 0;
-            team2Total += end.team2Score || 0;
+    highlightCurrentEnd() {
+        // Снимаем подсветку со всех эндов
+        document.querySelectorAll('.end-score').forEach(input => {
+            input.classList.remove('current-end');
         });
         
-        this.match.team1Score = team1Total;
-        this.match.team2Score = team2Total;
+        // Подсвечиваем текущий энд
+        document.querySelectorAll(`.end-score[data-end="${this.currentEnd}"]`).forEach(input => {
+            input.classList.add('current-end');
+        });
     }
     
     async saveMatch() {

@@ -108,9 +108,9 @@ class CurlingDatabase {
     initializePlayers(matchData) {
         const players = {};
         
-        // Команда 1
-        for (let i = 1; i <= 5; i++) {
-            const playerKey = `player${i}Name`;
+        // Команда 1 - 4 игрока
+        for (let i = 1; i <= 4; i++) {
+            const playerKey = `team1Player${i}`;
             players[`team1_player${i}`] = {
                 id: `team1_player${i}`,
                 name: matchData[playerKey] || `Игрок ${i}`,
@@ -124,9 +124,9 @@ class CurlingDatabase {
             };
         }
         
-        // Команда 2
-        for (let i = 1; i <= 5; i++) {
-            const playerKey = `player${i}Name`;
+        // Команда 2 - 4 игрока
+        for (let i = 1; i <= 4; i++) {
+            const playerKey = `team2Player${i}`;
             players[`team2_player${i}`] = {
                 id: `team2_player${i}`,
                 name: matchData[playerKey] || `Игрок ${i}`,
@@ -362,6 +362,52 @@ class CurlingDatabase {
         }
     }
     
+    // === СТАТИСТИКА ===
+    
+    calculateTeamStats(match, teamNumber) {
+        const teamPlayers = Object.values(match.players || {}).filter(p => p.team === teamNumber);
+        
+        const teamStats = {
+            take: { count: 0, success: 0, percentage: 0 },
+            draw: { count: 0, success: 0, percentage: 0 },
+            guard: { count: 0, success: 0, percentage: 0 },
+            total: { count: 0, success: 0, percentage: 0 }
+        };
+        
+        teamPlayers.forEach(player => {
+            teamStats.take.count += player.throws.take.count;
+            teamStats.take.success += player.throws.take.success;
+            
+            teamStats.draw.count += player.throws.draw.count;
+            teamStats.draw.success += player.throws.draw.success;
+            
+            teamStats.guard.count += player.throws.guard.count;
+            teamStats.guard.success += player.throws.guard.success;
+            
+            teamStats.total.count += player.throws.total.count;
+            teamStats.total.success += player.throws.total.success;
+        });
+        
+        // Рассчитываем проценты
+        teamStats.take.percentage = teamStats.take.count > 0 
+            ? (teamStats.take.success / (teamStats.take.count * 125)) * 125 
+            : 0;
+        
+        teamStats.draw.percentage = teamStats.draw.count > 0 
+            ? (teamStats.draw.success / (teamStats.draw.count * 125)) * 125 
+            : 0;
+        
+        teamStats.guard.percentage = teamStats.guard.count > 0 
+            ? (teamStats.guard.success / (teamStats.guard.count * 125)) * 125 
+            : 0;
+        
+        teamStats.total.percentage = teamStats.total.count > 0 
+            ? (teamStats.total.success / (teamStats.total.count * 125)) * 125 
+            : 0;
+        
+        return teamStats;
+    }
+    
     // === ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ДЛЯ localStorage ===
     
     saveToLocalStorage(key, data) {
@@ -413,52 +459,6 @@ class CurlingDatabase {
         } catch (e) {
             console.error('Ошибка удаления из localStorage:', e);
         }
-    }
-    
-    // === СТАТИСТИКА ===
-    
-    calculateTeamStats(match, teamNumber) {
-        const teamPlayers = Object.values(match.players || {}).filter(p => p.team === teamNumber);
-        
-        const teamStats = {
-            take: { count: 0, success: 0, percentage: 0 },
-            draw: { count: 0, success: 0, percentage: 0 },
-            guard: { count: 0, success: 0, percentage: 0 },
-            total: { count: 0, success: 0, percentage: 0 }
-        };
-        
-        teamPlayers.forEach(player => {
-            teamStats.take.count += player.throws.take.count;
-            teamStats.take.success += player.throws.take.success;
-            
-            teamStats.draw.count += player.throws.draw.count;
-            teamStats.draw.success += player.throws.draw.success;
-            
-            teamStats.guard.count += player.throws.guard.count;
-            teamStats.guard.success += player.throws.guard.success;
-            
-            teamStats.total.count += player.throws.total.count;
-            teamStats.total.success += player.throws.total.success;
-        });
-        
-        // Рассчитываем проценты
-        teamStats.take.percentage = teamStats.take.count > 0 
-            ? (teamStats.take.success / (teamStats.take.count * 125)) * 125 
-            : 0;
-        
-        teamStats.draw.percentage = teamStats.draw.count > 0 
-            ? (teamStats.draw.success / (teamStats.draw.count * 125)) * 125 
-            : 0;
-        
-        teamStats.guard.percentage = teamStats.guard.count > 0 
-            ? (teamStats.guard.success / (teamStats.guard.count * 125)) * 125 
-            : 0;
-        
-        teamStats.total.percentage = teamStats.total.count > 0 
-            ? (teamStats.total.success / (teamStats.total.count * 125)) * 125 
-            : 0;
-        
-        return teamStats;
     }
 }
 

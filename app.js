@@ -114,7 +114,7 @@ class MainApp {
                     </div>
                     <div class="match-stat">
                         <i class="fas fa-flag"></i>
-                        <span>${match.currentEnd || 1}/${match.ends?.length || 12} эндов</span>
+                        <span>${match.currentEnd || 1}/12 эндов</span>
                     </div>
                 </div>
             </div>
@@ -149,11 +149,16 @@ class MainApp {
             matchName,
             team1Name,
             team2Name,
-            player1Name: document.getElementById('player1Name').value.trim() || 'Игрок 1',
-            player2Name: document.getElementById('player2Name').value.trim() || 'Игрок 2',
-            player3Name: document.getElementById('player3Name').value.trim() || 'Игрок 3',
-            player4Name: document.getElementById('player4Name').value.trim() || 'Игрок 4',
-            player5Name: document.getElementById('player5Name').value.trim() || 'Игрок 5'
+            // Игроки команды 1
+            team1Player1: document.getElementById('team1Player1').value.trim() || 'Игрок 1',
+            team1Player2: document.getElementById('team1Player2').value.trim() || 'Игрок 2',
+            team1Player3: document.getElementById('team1Player3').value.trim() || 'Игрок 3',
+            team1Player4: document.getElementById('team1Player4').value.trim() || 'Игрок 4',
+            // Игроки команды 2
+            team2Player1: document.getElementById('team2Player1').value.trim() || 'Игрок 1',
+            team2Player2: document.getElementById('team2Player2').value.trim() || 'Игрок 2',
+            team2Player3: document.getElementById('team2Player3').value.trim() || 'Игрок 3',
+            team2Player4: document.getElementById('team2Player4').value.trim() || 'Игрок 4'
         };
         
         try {

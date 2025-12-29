@@ -41,57 +41,111 @@
 
         <!-- Основной контент -->
         <main class="main-content">
-            <!-- Табло счета -->
+            <!-- НОВОЕ ТАБЛО ЭНДОВ -->
             <div class="scoreboard-section">
-                <div class="scoreboard">
-                    <!-- Команда 1 (красная) -->
-                    <div class="team-score active-team" id="team1Score">
-                        <input type="text" class="team-name team1-name" 
-                               value="Команда 1" id="team1NameInput">
-                        <div class="score-display" id="team1Total">0</div>
-                        <div class="ends-container">
-                            <div class="ends-header">Энды:</div>
-                            <div class="ends-grid" id="team1Ends">
-                                <!-- Энды будут добавляться динамически -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Разделитель -->
-                    <div class="score-divider">
-                        <div class="ends-label">Энд</div>
-                        <div class="ends-numbers" id="endsNumbers">
-                            <!-- Номера эндов будут добавляться динамически -->
-                        </div>
-                    </div>
-                    
-                    <!-- Команда 2 (желтая) -->
-                    <div class="team-score" id="team2Score">
-                        <input type="text" class="team-name team2-name" 
-                               value="Команда 2" id="team2NameInput">
-                        <div class="score-display" id="team2Total">0</div>
-                        <div class="ends-container">
-                            <div class="ends-header">Энды:</div>
-                            <div class="ends-grid" id="team2Ends">
-                                <!-- Энды будут добавляться динамически -->
-                            </div>
-                        </div>
-                    </div>
+                <div class="ends-table-container">
+                    <table class="ends-table">
+                        <thead>
+                            <tr>
+                                <th class="end-label">Энд</th>
+                                <!-- 10 основных эндов -->
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                                <!-- 2 экстра энда -->
+                                <th class="extra-end">EE1</th>
+                                <th class="extra-end">EE2</th>
+                                <!-- Общий счет -->
+                                <th class="total-column">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Команда 1 -->
+                            <tr class="team-row team1-row">
+                                <td class="team-name-cell">
+                                    <input type="text" class="team-name-input team1-name" 
+                                           id="team1NameInput" value="Команда 1">
+                                </td>
+                                <!-- Очки команды 1 по эндам -->
+                                <td><input type="number" class="end-score team1-score" data-end="1" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team1-score" data-end="2" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team1-score" data-end="3" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team1-score" data-end="4" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team1-score" data-end="5" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team1-score" data-end="6" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team1-score" data-end="7" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team1-score" data-end="8" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team1-score" data-end="9" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team1-score" data-end="10" min="0" max="8" value="0"></td>
+                                <!-- Экстра энды -->
+                                <td><input type="number" class="end-score team1-score extra-end" data-end="11" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team1-score extra-end" data-end="12" min="0" max="8" value="0"></td>
+                                <!-- Общий счет (автоматический) -->
+                                <td class="total-cell" id="team1Total">0</td>
+                            </tr>
+                            
+                            <!-- Команда 2 -->
+                            <tr class="team-row team2-row">
+                                <td class="team-name-cell">
+                                    <input type="text" class="team-name-input team2-name" 
+                                           id="team2NameInput" value="Команда 2">
+                                </td>
+                                <!-- Очки команды 2 по эндам -->
+                                <td><input type="number" class="end-score team2-score" data-end="1" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team2-score" data-end="2" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team2-score" data-end="3" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team2-score" data-end="4" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team2-score" data-end="5" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team2-score" data-end="6" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team2-score" data-end="7" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team2-score" data-end="8" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team2-score" data-end="9" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team2-score" data-end="10" min="0" max="8" value="0"></td>
+                                <!-- Экстра энды -->
+                                <td><input type="number" class="end-score team2-score extra-end" data-end="11" min="0" max="8" value="0"></td>
+                                <td><input type="number" class="end-score team2-score extra-end" data-end="12" min="0" max="8" value="0"></td>
+                                <!-- Общий счет (автоматический) -->
+                                <td class="total-cell" id="team2Total">0</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 
                 <!-- Управление эндами -->
-                <div class="ends-controls">
-                    <button id="prevEndBtn" class="btn btn-secondary">
-                        <i class="fas fa-chevron-left"></i> Предыдущий энд
-                    </button>
-                    <div class="current-end">
+                <div class="current-end-info">
+                    <div class="current-end-display">
                         <span>Текущий энд:</span>
                         <select id="currentEndSelect" class="end-select">
-                            <!-- Опции будут добавляться динамически -->
+                            <option value="1">Энд 1</option>
+                            <option value="2">Энд 2</option>
+                            <option value="3">Энд 3</option>
+                            <option value="4">Энд 4</option>
+                            <option value="5">Энд 5</option>
+                            <option value="6">Энд 6</option>
+                            <option value="7">Энд 7</option>
+                            <option value="8">Энд 8</option>
+                            <option value="9">Энд 9</option>
+                            <option value="10">Энд 10</option>
+                            <option value="11">Экстра Энд 1</option>
+                            <option value="12">Экстра Энд 2</option>
                         </select>
                     </div>
-                    <button id="nextEndBtn" class="btn btn-secondary"> Следующий энд <i class="fas fa-chevron-right"></i>
-                    </button>
+                    
+                    <div class="ends-controls">
+                        <button id="prevEndBtn" class="btn btn-secondary">
+                            <i class="fas fa-chevron-left"></i> Предыдущий
+                        </button>
+                        <button id="nextEndBtn" class="btn btn-secondary">
+                            Следующий <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -107,7 +161,7 @@
                         <thead>
                             <tr>
                                 <th class="throw-type">Вид броска</th>
-                                <!-- Заголовки игроков будут добавляться динамически -->
+                                <!-- Игроки будут добавляться динамически -->
                                 <th class="team-total">Команда</th>
                             </tr>
                         </thead>
@@ -130,7 +184,7 @@
                         <thead>
                             <tr>
                                 <th class="throw-type">Вид броска</th>
-                                <!-- Заголовки игроков будут добавляться динамически -->
+                                <!-- Игроки будут добавляться динамически -->
                                 <th class="team-total">Команда</th>
                             </tr>
                         </thead>
