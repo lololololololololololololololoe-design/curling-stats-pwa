@@ -2,189 +2,64 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Статистика Керлинга</title>
-    <meta name="theme-color" content="#2c3e50">
-    
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="icons/icon-192.png">
-    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-    
-    <!-- iOS мета-теги -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <!-- Стили -->
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- Шрифты -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Перенаправление на приложение керлинга</title>
+    <meta http-equiv="refresh" content="0; url=/curling-stats-pwa/app-index.html">
+    <link rel="manifest" href="/curling-stats-pwa/manifest.json">
+    <link rel="icon" href="/curling-stats-pwa/icons/icon-192.png">
 </head>
-<body>
-    <div class="container">
-        <!-- Шапка -->
-        <header class="header">
-            <h1><i class="fas fa-hockey-puck"></i> Статистика Керлинга</h1>
-        </header>
-
-        <!-- Основной контент -->
-        <main class="main-content">
-            <div class="matches-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-trophy"></i> Все матчи</h2>
-                    <button id="createMatchBtn" class="btn btn-primary">
-                        <i class="fas fa-plus-circle"></i> Создать матч
-                    </button>
-                </div>
-
-                <!-- Список матчей -->
-                <div id="matchesList" class="matches-list">
-                    <!-- Матчи будут добавляться динамически -->
-                    <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <p>У вас пока нет матчей</p>
-                        <p class="subtext">Создайте первый матч для ведения статистики</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Модальное окно создания матча -->
-            <div id="createMatchModal" class="modal hidden">
-                <div class="modal-content">
-                    <h2><i class="fas fa-plus-circle"></i> Создать новый матч</h2>
-                    <form id="createMatchForm">
-                        <div class="form-group">
-                            <label for="matchName">Название матча:</label>
-                            <input type="text" id="matchName" 
-                                   placeholder="Например: Чемпионат города, 1/4 финала" 
-                                   required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="team1Name">Команда 1:</label>
-                            <input type="text" id="team1Name" 
-                                   placeholder="Красные" 
-                                   value="Команда 1" 
-                                   required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="team2Name">Команда 2:</label>
-                            <input type="text" id="team2Name" 
-                                   placeholder="Желтые" 
-                                   value="Команда 2" 
-                                   required>
-                        </div>
-                        
-                        <!-- Игроки команды 1 -->
-                        <div class="players-section">
-                            <h3><i class="fas fa-users"></i> Игроки команды 1 (4 игрока)</h3>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="team1Player1">Игрок 1:</label>
-                                    <input type="text" id="team1Player1" 
-                                           placeholder="Игрок 1 команды 1" 
-                                           required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="team1Player2">Игрок 2:</label>
-                                    <input type="text" id="team1Player2" 
-                                           placeholder="Игрок 2 команды 1" 
-                                           required>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="team1Player3">Игрок 3:</label>
-                                    <input type="text" id="team1Player3" 
-                                           placeholder="Игрок 3 команды 1" 
-                                           required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="team1Player4">Игрок 4:</label>
-                                    <input type="text" id="team1Player4" 
-                                           placeholder="Игрок 4 команды 1" 
-                                           required>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Игроки команды 2 -->
-                        <div class="players-section">
-                            <h3><i class="fas fa-users"></i> Игроки команды 2 (4 игрока)</h3>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="team2Player1">Игрок 1:</label>
-                                    <input type="text" id="team2Player1" 
-                                           placeholder="Игрок 1 команды 2" 
-                                           required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="team2Player2">Игрок 2:</label>
-                                    <input type="text" id="team2Player2" 
-                                           placeholder="Игрок 2 команды 2" 
-                                           required>
-                                </div>
-                            </div>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="team2Player3">Игрок 3:</label>
-                                    <input type="text" id="team2Player3" 
-                                           placeholder="Игрок 3 команды 2" 
-                                           required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="team2Player4">Игрок 4:</label>
-                                    <input type="text" id="team2Player4" 
-                                           placeholder="Игрок 4 команды 2" 
-                                           required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-buttons">
-                            <button type="button" id="cancelCreateBtn" class="btn btn-secondary">
-                                Отмена
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Создать матч
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </main>
-
-        <!-- Футер -->
-        <footer class="footer">
-            <div class="app-info">
-                <i class="fas fa-mobile-alt"></i>
-                <span>Установите это приложение на домашний экран</span>
-            </div>
-            <div class="offline-status" id="offlineStatus">
-                <i class="fas fa-wifi"></i>
-                <span>Онлайн</span>
-            </div>
-        </footer>
+<body style="
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    color: white;
+    text-align: center;
+    padding: 20px;
+">
+    <div style="
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        color: #2c3e50;
+        max-width: 500px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    ">
+        <h1 style="margin-bottom: 20px;">
+            <i class="fas fa-hockey-puck"></i> Статистика Керлинга
+        </h1>
+        <p style="margin-bottom: 30px; font-size: 1.1rem;">
+            Приложение загружается...
+        </p>
+        <div style="margin-top: 20px;">
+            <a href="/curling-stats-pwa/app-index.html" 
+               style="
+                   background: #3498db;
+                   color: white;
+                   padding: 12px 24px;
+                   border-radius: 8px;
+                   text-decoration: none;
+                   font-weight: 600;
+                   display: inline-block;
+               ">
+                Перейти сейчас
+            </a>
+        </div>
+        <p style="margin-top: 30px; font-size: 0.9rem; color: #7f8c8d;">
+            Если перенаправление не сработало, нажмите кнопку выше
+        </p>
     </div>
-
-    <!-- Скрипты -->
-    <script src="db.js"></script>
-    <script src="app.js"></script>
     
     <script>
-        // Проверка Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(reg => console.log('SW зарегистрирован'))
-                    .catch(err => console.log('Ошибка SW:', err));
-            });
-        }
+        // Автоматический редирект через 1 секунду если не сработал meta refresh
+        setTimeout(function() {
+            window.location.href = '/curling-stats-pwa/app-index.html';
+        }, 1000);
     </script>
+    
+    <!-- Подключаем Font Awesome для иконки -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </body>
 </html>

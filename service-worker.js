@@ -1,22 +1,22 @@
 // Service Worker для офлайн работы PWA
-const CACHE_NAME = 'curling-stats-v2';
+const CACHE_VERSION = 'v4';
+const CACHE_NAME = `curling-stats-${CACHE_VERSION}`;
 const CACHE_URLS = [
-    '/',
-    '/index.html',
-    '/match.html',
-    '/throw.html',
-    '/style.css',
-    '/app.js',
-    '/match.js',
-    '/throw.js',
-    '/db.js',
-    '/manifest.json',
-    '/offline.html',
-    '/icons/icon-192.png',
-    '/icons/icon-512.png',
-    '/icons/apple-touch-icon.png',
-    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+  '/curling-stats-pwa/',
+  '/curling-stats-pwa/index.html',
+  '/curling-stats-pwa/match.html',
+  '/curling-stats-pwa/throw.html',
+  '/curling-stats-pwa/style.css',
+  '/curling-stats-pwa/app.js',
+  '/curling-stats-pwa/match.js',
+  '/curling-stats-pwa/throw.js',
+  '/curling-stats-pwa/db.js',
+  '/curling-stats-pwa/service-worker.js',
+  '/curling-stats-pwa/manifest.json',
+  '/curling-stats-pwa/offline.html',
+  '/curling-stats-pwa/icons/icon-192.png',
+  '/curling-stats-pwa/icons/icon-512.png',
+  '/curling-stats-pwa/icons/apple-touch-icon.png'
 ];
 
 // Установка Service Worker
